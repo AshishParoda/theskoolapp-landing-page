@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TheSkoolApp | School Communication, Homework, Attendance & Records</title>
+  <style>
+    :root {
+      --ink: #152033;
+      --muted: #657089;
+      --paper: #fbfcff;
+      --white: #ffffff;
+      --line: rgba(21, 32, 51, 0.12);
+      --blue: #2563eb;
+      --blue-dark: #173ea5;
+      --teal: #00a99d;
+      --amber: #f8b84e;
+      --coral: #ff6b5f;
+      --green: #19a974;
+      --shadow: 0 22px 70px rgba(28, 39, 61, 0.14);
+      --soft-shadow: 0 14px 40px rgba(28, 39, 61, 0.1);
+      --radius: 8px;
+      --max: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(0, 169, 157, 0.13), transparent 28rem),
+        linear-gradient(180deg, #f6f9ff 0%, #ffffff 34%, #f8fbff 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.58);
+      background: rgba(251, 252, 255, 0.78);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.24);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo::before {
+      content: "";
+      width: 20px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-top: 0;
+      transform: skewY(-9deg);
+      border-radius: 2px 2px 5px 5px;
+      position: absolute;
+      bottom: 11px;
+    }
+
+    .logo::after {
+      content: "";
+      width: 24px;
+      height: 10px;
+      background: currentColor;
+      clip-path: polygon(50% 0, 100% 36%, 50% 74%, 0 36%);
+      position: absolute;
+      top: 11px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .nav-links a:hover {
+      color: var(--blue);
+    }
+
+    .nav-cta,
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: 0;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .nav-cta {
+      padding: 0 18px;
+      color: white;
+      background: var(--ink);
+      box-shadow: 0 10px 24px rgba(21, 32, 51, 0.16);
+      font-size: 14px;
+    }
+
+    .btn {
+      padding: 0 22px;
+      font-size: 15px;
+    }
+
+    .btn:hover,
+    .nav-cta:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-secondary {
+      color: var(--ink);
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 22px rgba(28, 39, 61, 0.08);
+    }
+
+    .hero {
+      padding: 76px 0 72px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+      gap: 56px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 12px;
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      border-radius: 999px;
+      color: var(--blue-dark);
+      background: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 10px 28px rgba(37, 99, 235, 0.08);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 6px rgba(25, 169, 116, 0.13);
+    }
+
+    h1 {
+      margin-top: 22px;
+      font-size: clamp(42px, 6vw, 78px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      color: #111a2b;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: clamp(17px, 2.1vw, 20px);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .trust-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 34px;
+      max-width: 680px;
+    }
+
+    .trust-item {
+      min-height: 94px;
+      padding: 18px;
+      border: 1px solid rgba(21, 32, 51, 0.09);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 10px 26px rgba(28, 39, 61, 0.06);
+    }
+
+    .trust-item strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .trust-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .phone-stage {
+      min-height: 640px;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .phone {
+      width: min(360px, 82vw);
+      min-height: 620px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      border-radius: 34px;
+      background: #0f172a;
+      box-shadow: 0 36px 90px rgba(15, 23, 42, 0.32);
+      position: relative;
+    }
+
+    .phone::before {
+      content: "";
+      width: 92px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.5);
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .screen {
+      min-height: 588px;
+      overflow: hidden;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(37, 99, 235, 0.94), rgba(0, 169, 157, 0.92) 38%, #f7faff 38%);
+    }
+
+    .app-head {
+      padding: 42px 22px 24px;
+      color: white;
+    }
+
+    .app-head small {
+      display: block;
+      opacity: 0.8;
+      font-weight: 750;
+    }
+
+    .app-head h2 {
+      margin-top: 7px;
+      font-size: 27px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .screen-card {
+      width: calc(100% - 28px);
+      margin: 0 auto 12px;
+      padding: 16px;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 13px 28px rgba(23, 62, 165, 0.13);
+    }
+
+    .homework-card {
+      margin-top: -6px;
+    }
+
+    .card-top,
+    .mini-row,
+    .message {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-top strong {
+      font-size: 15px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      color: #0b6b61;
+      background: rgba(0, 169, 157, 0.13);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .assignment {
+      margin-top: 14px;
+      padding: 13px;
+      border: 1px solid rgba(37, 99, 235, 0.12);
+      border-radius: 8px;
+      background: #f7faff;
+    }
+
+    .assignment b,
+    .mini-row b {
+      display: block;
+      font-size: 13px;
+    }
+
+    .assignment span,
+    .mini-row span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .progress {
+      height: 7px;
+      margin-top: 12px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.12);
+      overflow: hidden;
+    }
+
+    .progress i {
+      display: block;
+      width: 78%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-stat {
+      padding: 12px;
+      border-radius: 8px;
+      color: var(--ink);
+      background: #f8fafc;
+      border: 1px solid rgba(21, 32, 51, 0.08);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .floating {
+      position: absolute;
+      width: 230px;
+      padding: 14px;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid rgba(21, 32, 51, 0.08);
+      box-shadow: var(--soft-shadow);
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .floating.left {
+      left: 0;
+      top: 100px;
+    }
+
+    .floating.right {
+      right: 0;
+      bottom: 88px;
+      animation-delay: -1.5s;
+    }
+
+    .floating strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .floating span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    section {
+      padding: 78px 0;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .section-head.center {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section-label {
+      color: var(--blue-dark);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h2 {
+      margin-top: 10px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .problem-solution {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .comparison {
+      min-height: 430px;
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .comparison.problem {
+      background: linear-gradient(180deg, #fffafa, #ffffff);
+    }
+
+    .comparison.solution {
+      background: linear-gradient(180deg, #f4fffd, #ffffff);
+    }
+
+    .comparison h3 {
+      font-size: 24px;
+      letter-spacing: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-box {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 8px;
+      color: white;
+      font-weight: 900;
+    }
+
+    .problem .icon-box {
+      background: var(--coral);
+    }
+
+    .solution .icon-box {
+      background: var(--teal);
+    }
+
+    .chat-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .chat {
+      padding: 13px 14px;
+      border-radius: 8px;
+      background: #f5f7fb;
+      color: #344054;
+      font-size: 14px;
+      font-weight: 650;
+      border: 1px solid rgba(21, 32, 51, 0.08);
+    }
+
+    .problem .chat:nth-child(2),
+    .problem .chat:nth-child(4) {
+      margin-left: 26px;
+      background: #fff0ee;
+    }
+
+    .solution .chat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #f4fffd;
+    }
+
+    .check {
+      color: var(--green);
+      font-weight: 950;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .feature-card,
+    .role-card,
+    .timeline-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .feature-card {
+      min-height: 258px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: "";
+      width: 100px;
+      height: 100px;
+      border-radius: 24px;
+      background: rgba(37, 99, 235, 0.07);
+      position: absolute;
+      right: -34px;
+      bottom: -34px;
+      transform: rotate(18deg);
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: white;
+      font-size: 24px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+    }
+
+    .feature-card:nth-child(2) .feature-icon {
+      background: linear-gradient(135deg, var(--teal), var(--green));
+    }
+
+    .feature-card:nth-child(3) .feature-icon {
+      background: linear-gradient(135deg, var(--amber), var(--coral));
+    }
+
+    .feature-card h3 {
+      margin-top: 22px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .feature-card p,
+    .role-card p,
+    .timeline-item p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .roles {
+      background:
+        linear-gradient(180deg, rgba(21, 32, 51, 0.03), rgba(37, 99, 235, 0.04)),
+        #ffffff;
+    }
+
+    .role-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .role-tab {
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: white;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.18s ease;
+    }
+
+    .role-tab.active {
+      color: white;
+      border-color: transparent;
+      background: var(--ink);
+      box-shadow: 0 14px 26px rgba(21, 32, 51, 0.18);
+    }
+
+    .role-panel {
+      display: none;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .role-panel.active {
+      display: grid;
+    }
+
+    .role-card {
+      padding: 28px;
+    }
+
+    .role-card h3 {
+      font-size: 30px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .role-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+      list-style: none;
+    }
+
+    .role-list li {
+      display: flex;
+      gap: 10px;
+      color: #344054;
+      font-weight: 700;
+    }
+
+    .dashboard-card {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: #111a2b;
+      color: white;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .dashboard-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.28), transparent 44%),
+        linear-gradient(315deg, rgba(0, 169, 157, 0.23), transparent 40%);
+      pointer-events: none;
+    }
+
+    .dashboard-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .metric {
+      min-height: 132px;
+      padding: 18px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(10px);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 9px;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .timeline-item {
+      padding: 24px;
+      min-height: 210px;
+    }
+
+    .step {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: white;
+      background: var(--ink);
+      font-weight: 900;
+    }
+
+    .timeline-item h3 {
+      margin-top: 20px;
+      font-size: 21px;
+    }
+
+    .cta {
+      padding: 0 0 80px;
+    }
+
+    .cta-box {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+      padding: 42px;
+      border-radius: var(--radius);
+      color: white;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(0, 169, 157, 0.92)),
+        #2563eb;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cta-box::after {
+      content: "";
+      width: 280px;
+      height: 280px;
+      border: 42px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+      position: absolute;
+      right: -80px;
+      top: -90px;
+    }
+
+    .cta-box h2,
+    .cta-box p,
+    .cta-box form {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-box p {
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 17px;
+    }
+
+    .waitlist {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 22px;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.17);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .waitlist input {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      outline: 0;
+      border-radius: 7px;
+      padding: 0 14px;
+      color: white;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .waitlist input::placeholder {
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .waitlist button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 7px;
+      padding: 0 18px;
+      color: var(--ink);
+      background: white;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .launch-note {
+      position: relative;
+      z-index: 1;
+      justify-self: end;
+      max-width: 330px;
+      padding: 24px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .launch-note strong {
+      display: block;
+      font-size: 44px;
+      line-height: 1;
+    }
+
+    .launch-note span {
+      display: block;
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.82);
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 34px 0;
+      border-top: 1px solid var(--line);
+      background: white;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translate(-50%, 120%);
+      z-index: 50;
+      padding: 14px 18px;
+      border-radius: 8px;
+      color: white;
+      background: #111a2b;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.26);
+      font-weight: 750;
+      transition: transform 0.25s ease;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .problem-solution,
+      .role-panel,
+      .cta-box {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-stage {
+        min-height: 620px;
+      }
+
+      .floating.left {
+        left: 4px;
+      }
+
+      .floating.right {
+        right: 4px;
+      }
+
+      .features-grid,
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .launch-note {
+        justify-self: start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .wrap {
+        width: min(100% - 28px, var(--max));
+      }
+
+      .nav {
+        min-height: 66px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-cta {
+        min-height: 40px;
+        padding: 0 13px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 48px 0 52px;
+      }
+
+      h1 {
+        font-size: clamp(40px, 14vw, 58px);
+      }
+
+      .hero-actions,
+      .waitlist {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions .btn,
+      .waitlist button {
+        width: 100%;
+      }
+
+      .trust-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-stage {
+        min-height: auto;
+        padding-top: 20px;
+      }
+
+      .phone {
+        min-height: auto;
+        width: min(340px, 100%);
+      }
+
+      .screen {
+        min-height: 560px;
+      }
+
+      .floating {
+        position: static;
+        width: 100%;
+        margin-top: 12px;
+        animation: none;
+      }
+
+      section {
+        padding: 56px 0;
+      }
+
+      .comparison,
+      .role-card,
+      .dashboard-card,
+      .feature-card,
+      .timeline-item {
+        padding: 20px;
+      }
+
+      .dashboard-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .cta {
+        padding-bottom: 56px;
+      }
+
+      .cta-box {
+        padding: 26px;
+      }
+
+      .footer-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="TheSkoolApp home">
+        <span class="logo" aria-hidden="true"></span>
+        <span>TheSkoolApp</span>
+      </a>
+      <div class="nav-links" aria-label="Page sections">
+        <a href="#problem">Problem</a>
+        <a href="#features">Features</a>
+        <a href="#roles">For Everyone</a>
+        <a href="#launch">Launch</a>
+      </div>
+      <a class="nav-cta" href="#launch">Join Waitlist</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow"><span class="dot" aria-hidden="true"></span>Upcoming school management app</div>
+          <h1>School updates without WhatsApp chaos.</h1>
+          <p class="hero-copy">
+            TheSkoolApp brings homework, attendance, test records and parent communication into one clean platform for teachers, students, parents and school directors.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#launch">Get Early Access</a>
+            <a class="btn btn-secondary" href="#features">Explore Features</a>
+          </div>
+          <div class="trust-strip" aria-label="Product highlights">
+            <div class="trust-item">
+              <strong>4-in-1</strong>
+              <span>Teachers, parents, students and directors</span>
+            </div>
+            <div class="trust-item">
+              <strong>Daily</strong>
+              <span>Homework and attendance tracking</span>
+            </div>
+            <div class="trust-item">
+              <strong>Clear</strong>
+              <span>Records, reports and communication</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-stage" aria-label="TheSkoolApp preview">
+          <div class="floating left">
+            <strong>New homework assigned</strong>
+            <span>Class 8B Mathematics, due tomorrow at 9:00 AM</span>
+          </div>
+
+          <div class="phone">
+            <div class="screen">
+              <div class="app-head">
+                <small>TheSkoolApp Dashboard</small>
+                <h2>Today at Sunrise Public School</h2>
+              </div>
+              <div class="screen-card homework-card">
+                <div class="card-top">
+                  <strong>Homework</strong>
+                  <span class="pill">Live</span>
+                </div>
+                <div class="assignment">
+                  <b>Science Chapter 5</b>
+                  <span>Assigned to Class 7A by Ms. Sharma</span>
+                  <div class="progress"><i aria-hidden="true"></i></div>
+                </div>
+              </div>
+              <div class="screen-card">
+                <div class="mini-row">
+                  <div>
+                    <b>Attendance marked</b>
+                    <span>32 present, 3 absent</span>
+                  </div>
+                  <span class="check">Done</span>
+                </div>
+                <div class="mini-grid">
+                  <div class="mini-stat">
+                    <strong>91%</strong>
+                    <span>Attendance</span>
+                  </div>
+                  <div class="mini-stat">
+                    <strong>84</strong>
+                    <span>Average Test Score</span>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-card">
+                <div class="message">
+                  <div>
+                    <b>Parent update sent</b>
+                    <span>Homework, attendance and test notice</span>
+                  </div>
+                  <span class="check">Seen</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="floating right">
+            <strong>Test record updated</strong>
+            <span>Parents can view subject-wise performance instantly.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="wrap">
+        <div class="section-head center">
+          <span class="section-label">Problem vs Solution</span>
+          <h2>Move every school update from noisy groups to organized records.</h2>
+          <p>WhatsApp groups are fast, but important updates get buried. TheSkoolApp keeps every academic detail structured, searchable and visible to the right people.</p>
+        </div>
+
+        <div class="problem-solution">
+          <article class="comparison problem">
+            <h3><span class="icon-box">!</span> WhatsApp group chaos</h3>
+            <div class="chat-stack">
+              <div class="chat">Homework message lost between good morning forwards.</div>
+              <div class="chat">Parent asks again: "Kal ka homework kya hai?"</div>
+              <div class="chat">Teacher sends attendance manually to admin.</div>
+              <div class="chat">Test marks shared late, record hard to find.</div>
+              <div class="chat">Director has no clear daily overview.</div>
+            </div>
+          </article>
+
+          <article class="comparison solution">
+            <h3><span class="icon-box">✓</span> TheSkoolApp clarity</h3>
+            <div class="chat-stack">
+              <div class="chat"><span>Homework assigned class-wise</span><span class="check">✓</span></div>
+              <div class="chat"><span>Parents get clear updates</span><span class="check">✓</span></div>
+              <div class="chat"><span>Attendance tracked daily</span><span class="check">✓</span></div>
+              <div class="chat"><span>Test records stored subject-wise</span><span class="check">✓</span></div>
+              <div class="chat"><span>Director sees school performance</span><span class="check">✓</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-label">Core Features</span>
+          <h2>Everything a school needs for daily academic flow.</h2>
+          <p>Built for simple adoption by teachers and useful visibility for families and school leadership.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">H</div>
+            <h3>Homework Management</h3>
+            <p>Teachers can assign homework by class, subject and due date. Students and parents get one clean place to check what needs to be completed.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">A</div>
+            <h3>Attendance Tracking</h3>
+            <p>Daily attendance becomes faster to mark, easier to review and ready for school reports without manual group messages.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">R</div>
+            <h3>Test Records</h3>
+            <p>Subject-wise marks, performance history and class progress are stored in an organized format for parents, teachers and directors.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="roles" class="roles">
+      <div class="wrap">
+        <div class="section-head center">
+          <span class="section-label">Made For Schools</span>
+          <h2>One app, four connected experiences.</h2>
+          <p>Each role gets the information they need, without clutter and without depending on long chat threads.</p>
+        </div>
+
+        <div class="role-tabs" role="tablist" aria-label="Role sections">
+          <button class="role-tab active" type="button" role="tab" aria-selected="true" data-role="teachers">Teachers</button>
+          <button class="role-tab" type="button" role="tab" aria-selected="false" data-role="parents">Parents</button>
+          <button class="role-tab" type="button" role="tab" aria-selected="false" data-role="students">Students</button>
+          <button class="role-tab" type="button" role="tab" aria-selected="false" data-role="directors">Directors</button>
+        </div>
+
+        <div class="role-panel active" data-panel="teachers">
+          <article class="role-card">
+            <h3>For Teachers</h3>
+            <p>Spend less time repeating updates and more time teaching.</p>
+            <ul class="role-list">
+              <li><span class="check">✓</span> Assign homework in minutes</li>
+              <li><span class="check">✓</span> Mark attendance class-wise</li>
+              <li><span class="check">✓</span> Upload test marks and remarks</li>
+              <li><span class="check">✓</span> Keep parent communication clear</li>
+            </ul>
+          </article>
+          <div class="dashboard-card">
+            <div class="dashboard-inner">
+              <div class="metric"><strong>12</strong><span>Assignments this week</span></div>
+              <div class="metric"><strong>96%</strong><span>Homework visibility</span></div>
+              <div class="metric"><strong>3 min</strong><span>Attendance marking time</span></div>
+              <div class="metric"><strong>1 place</strong><span>All class records</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-panel" data-panel="parents">
+          <article class="role-card">
+            <h3>For Parents</h3>
+            <p>Know what is happening at school without searching through messages.</p>
+            <ul class="role-list">
+              <li><span class="check">✓</span> View homework and deadlines</li>
+              <li><span class="check">✓</span> Check attendance history</li>
+              <li><span class="check">✓</span> Track test performance</li>
+              <li><span class="check">✓</span> Receive important notices clearly</li>
+            </ul>
+          </article>
+          <div class="dashboard-card">
+            <div class="dashboard-inner">
+              <div class="metric"><strong>Today</strong><span>Homework status</span></div>
+              <div class="metric"><strong>91%</strong><span>Monthly attendance</span></div>
+              <div class="metric"><strong>84</strong><span>Latest test score</span></div>
+              <div class="metric"><strong>Seen</strong><span>School notice status</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-panel" data-panel="students">
+          <article class="role-card">
+            <h3>For Students</h3>
+            <p>A simple daily checklist for homework, tests and class updates.</p>
+            <ul class="role-list">
+              <li><span class="check">✓</span> See all assignments in one place</li>
+              <li><span class="check">✓</span> Never miss due dates</li>
+              <li><span class="check">✓</span> Review test results</li>
+              <li><span class="check">✓</span> Stay connected with class updates</li>
+            </ul>
+          </article>
+          <div class="dashboard-card">
+            <div class="dashboard-inner">
+              <div class="metric"><strong>5</strong><span>Tasks pending</span></div>
+              <div class="metric"><strong>2</strong><span>Tests next week</span></div>
+              <div class="metric"><strong>Done</strong><span>Science homework</span></div>
+              <div class="metric"><strong>New</strong><span>Math worksheet</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-panel" data-panel="directors">
+          <article class="role-card">
+            <h3>For School Directors</h3>
+            <p>Get a bird's-eye view of school academics and communication quality.</p>
+            <ul class="role-list">
+              <li><span class="check">✓</span> Monitor attendance trends</li>
+              <li><span class="check">✓</span> Review class-wise performance</li>
+              <li><span class="check">✓</span> Reduce communication complaints</li>
+              <li><span class="check">✓</span> Bring school operations online</li>
+            </ul>
+          </article>
+          <div class="dashboard-card">
+            <div class="dashboard-inner">
+              <div class="metric"><strong>18</strong><span>Active classes</span></div>
+              <div class="metric"><strong>93%</strong><span>School attendance</span></div>
+              <div class="metric"><strong>42</strong><span>Reports generated</span></div>
+              <div class="metric"><strong>Clean</strong><span>Parent communication</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head center">
+          <span class="section-label">How It Works</span>
+          <h2>Designed for schools that want simple digital adoption.</h2>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="step">1</div>
+            <h3>School setup</h3>
+            <p>Add classes, sections, subjects, teachers and student records in a clean structure.</p>
+          </article>
+          <article class="timeline-item">
+            <div class="step">2</div>
+            <h3>Daily updates</h3>
+            <p>Teachers post homework, mark attendance and update test records from one dashboard.</p>
+          </article>
+          <article class="timeline-item">
+            <div class="step">3</div>
+            <h3>Everyone stays informed</h3>
+            <p>Parents, students and directors see the right information without noisy message groups.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="launch" class="cta">
+      <div class="wrap">
+        <div class="cta-box">
+          <div>
+            <span class="section-label" style="color: rgba(255,255,255,0.82);">Coming Soon</span>
+            <h2>Bring your school communication into one premium app.</h2>
+            <p>Join the early access list for TheSkoolApp and be among the first schools to try the platform when it launches.</p>
+            <form class="waitlist" id="waitlistForm">
+              <input type="email" id="emailInput" aria-label="Email address" placeholder="Enter your school email" required />
+              <button type="submit">Notify Me</button>
+            </form>
+          </div>
+          <div class="launch-note">
+            <strong>Early Access</strong>
+            <span>Built for schools that want organized academics, fewer repeated messages and better parent visibility.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>TheSkoolApp</span>
+      </div>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#roles">Users</a>
+        <a href="#launch">Waitlist</a>
+      </div>
+      <div>© 2026 TheSkoolApp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Thank you. We will notify you when TheSkoolApp launches.</div>
+
+  <script>
+    const roleTabs = document.querySelectorAll(".role-tab");
+    const rolePanels = document.querySelectorAll(".role-panel");
+    const toast = document.getElementById("toast");
+    const waitlistForm = document.getElementById("waitlistForm");
+    const emailInput = document.getElementById("emailInput");
+
+    roleTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const role = tab.dataset.role;
+
+        roleTabs.forEach((item) => {
+          const isActive = item === tab;
+          item.classList.toggle("active", isActive);
+          item.setAttribute("aria-selected", String(isActive));
+        });
+
+        rolePanels.forEach((panel) => {
+          panel.classList.toggle("active", panel.dataset.panel === role);
+        });
+      });
+    });
+
+    waitlistForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!emailInput.checkValidity()) {
+        emailInput.reportValidity();
+        return;
+      }
+
+      toast.classList.add("show");
+      emailInput.value = "";
+
+      window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3200);
+    });
+  </script>
+</body>
+</html>
