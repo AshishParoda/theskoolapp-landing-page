@@ -1374,8 +1374,13 @@
             <span class="section-label" style="color: rgba(255,255,255,0.82);">Coming Soon</span>
             <h2>Bring your school communication into one premium app.</h2>
             <p>Join the early access list for TheSkoolApp and be among the first schools to try the platform when it launches.</p>
-            <form class="waitlist" id="waitlistForm">
+            <form class="waitlist" action="https://formsubmit.co/ashishparoda2007@gmail.com" method="POST">
               <input type="email" id="emailInput" name="email" aria-label="Email address" placeholder="Enter your school email" required />
+              <input type="hidden" name="_subject" value="New TheSkoolApp early-access signup" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_url" value="https://theskoolapp-landing-page.vercel.app/#launch" />
+              <input type="hidden" name="_next" value="https://theskoolapp-landing-page.vercel.app/#launch" />
+              <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none" />
               <button type="submit">Notify Me</button>
             </form>
           </div>
@@ -1403,14 +1408,9 @@
     </div>
   </footer>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">Thank you. We will notify you when TheSkoolApp launches.</div>
-
   <script>
     const roleTabs = document.querySelectorAll(".role-tab");
     const rolePanels = document.querySelectorAll(".role-panel");
-    const toast = document.getElementById("toast");
-    const waitlistForm = document.getElementById("waitlistForm");
-    const emailInput = document.getElementById("emailInput");
 
     roleTabs.forEach((tab) => {
       tab.addEventListener("click", () => {
@@ -1428,49 +1428,6 @@
       });
     });
 
-    waitlistForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!emailInput.checkValidity()) {
-        emailInput.reportValidity();
-        return;
-      }
-
-      const submitButton = waitlistForm.querySelector("button");
-      const email = emailInput.value.trim();
-      submitButton.disabled = true;
-      submitButton.textContent = "Joining...";
-
-      try {
-        const response = await fetch("https://formsubmit.co/ajax/ashishparoda2007@gmail.com", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({
-            email,
-            _subject: "New TheSkoolApp early-access signup",
-            _template: "table",
-            _captcha: "false"
-          })
-        });
-
-        if (!response.ok) throw new Error("Waitlist submission failed");
-
-        toast.textContent = "Thank you. We will notify you when TheSkoolApp launches.";
-        emailInput.value = "";
-      } catch (error) {
-        toast.textContent = "We could not save your email. Please try again.";
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = "Notify Me";
-        toast.classList.add("show");
-
-        window.setTimeout(() => {
-          toast.classList.remove("show");
-        }, 3200);
-      }
-    });
   </script>
 </body>
 </html>
